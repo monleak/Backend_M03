@@ -25,11 +25,20 @@ module.exports = db;
 //POSTGRESQL
 
 var psql = require('pg');
+/*
 var db = new psql.Client({
   host: 'sp-17-production-db.fly.dev',
   port: 5432,
   user: 'postgres',
   password: 'lvI5yXgQkZFfkVq',
+  database: 'postgres',
+});
+*/
+var db = new psql.Client({
+  host: 'localhost',
+  port: 5432,
+  user: 'postgres',
+  password: 'root',
   database: 'postgres',
 });
 
@@ -39,7 +48,7 @@ db.connect(function(err) {
     } else {
       console.log('DB connected');
     }
-    db.query('SELECT tablename FROM pg_catalog.pg_tables where tableowner=\'postgres\';', (err, res) => {
+    db.query('SELECT tablename FROM pg_catalog.pg_tables where schemaname=\'public\';', (err, res) => {
         if (err) throw err;
         console.log(res.rows);
         // db.end();r
