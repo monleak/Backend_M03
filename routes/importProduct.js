@@ -23,29 +23,30 @@ router.get('/getHistory',function(req,res,next){
     }
     if(typeTime === undefined){
         //Nếu time null thì trả về toàn bộ danh sách
-        var sql = `select * from supplier limit 10 offset (${page}-1)*10;`;
+        var sql = `select * from import_product limit 10 offset (${page}-1)*10;`;
     }else if(typeTime === "quarter"){
         //Get dữ liệu theo quý (một quý có 3 tháng)
-        var sql = `select * from supplier 
-                    where floor(date_part(\'month\',\"createdAt\"::timestamp)/3+1) = ${quarter} 
+        var sql = `select * from import_product where
+                    floor(date_part(\'month\',\"createdAt\"::timestamp)/3+1) = ${quarter} 
                     and date_part(\'year\',\"createdAt\"::timestamp) = ${year}
                     limit 10 offset (${page}-1)*10;`
     }else if(typeTime === "day"){
         //Get dữ liệu theo ngày
-        var sql = `select * from supplier 
-                    where date_part(\'day\',\"createdAt\"::timestamp) = ${time.getDate()}
+        var sql = `select * from import_product where
+                    date_part(\'day\',\"createdAt\"::timestamp) = ${time.getDate()}
                     and date_part(\'month\',\"createdAt\"::timestamp) = ${time.getMonth()+1}
                     and date_part(\'year\',\"createdAt\"::timestamp) = ${time.getFullYear()}
                     limit 10 offset (${page}-1)*10;`
     }else if(typeTime === "month"){
         //Get dữ liệu theo tháng
-        var sql = `select * from supplier 
-                    where date_part(\'month\',\"createdAt\"::timestamp) = ${time.getMonth()+1}
+        var sql = `select * from import_product where
+                    date_part(\'month\',\"createdAt\"::timestamp) = ${time.getMonth()+1}
                     and date_part(\'year\',\"createdAt\"::timestamp) = ${time.getFullYear()}
                     limit 10 offset (${page}-1)*10;`
     }else if(typeTime==="year"){
-        var sql = `select * from supplier 
-                    where date_part(\'year\',\"createdAt\"::timestamp) = ${time.getFullYear()}
+        //Get dữ liệu theo năm
+        var sql = `select * from import_product where
+                    date_part(\'year\',\"createdAt\"::timestamp) = ${time.getFullYear()}
                     limit 10 offset (${page}-1)*10;`
     }
     db.query(sql, function (err, result) {
