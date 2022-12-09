@@ -16,7 +16,8 @@ router.get('/getHistory',function(req,res,next){
             var year = req.query.year;
             var quarter = req.query.quarter;
         }else{
-            res.send("Thiếu input!!!!")
+            res.send("Thiếu input!!!!");
+            return res.status(6969);
         }
     }else if(typeTime != undefined){
         var time = new Date(req.query.time);
@@ -58,6 +59,32 @@ router.get('/getHistory',function(req,res,next){
         res.json({
             page: page,
             getBy: {typeTime: typeTime,time: time,quarter: quarter,year: year},
+            data: data
+        });
+    });
+});
+
+router.get('/getHistory/statistical',function(req,res,next){
+    //Số lượng hàng nhập vào theo từng tháng trong năm
+    var year = req.query.year;
+    if(year === undefined){
+        res.send("Cần có tham số là năm");
+        return res.status(6969);
+    }
+    var sql = `select date_part('month',"createdAt"::timestamp) thang, sum(quantity) count
+            from import_product
+            where date_part('year',"createdAt"::timestamp) = ${year}
+            group by date_part('month',"createdAt"::timestamp)
+            ;`;
+
+    db.query(sql, function (err, result) {
+        if (err){
+            console.log(sql);
+            throw err;
+        } 
+        let data = result.rows;
+        res.json({
+            year: year,
             data: data
         });
     });
